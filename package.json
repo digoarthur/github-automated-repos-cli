@@ -1,0 +1,19 @@
+{
+  "name": "github-automated-repos-cli",
+  "version": "1.0.0",
+  "description": "CLI para gerar página de exemplo usando github-automated-repos em projetos Next.js, React ou Vite",
+  "bin": {
+    "github-automated-repos-example": "bin/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "author": "Seu Nome",
+  "license": "MIT",
+  "dependencies": {},
+  "files": [
+    "bin",
+    "examples"
+  ]
+}

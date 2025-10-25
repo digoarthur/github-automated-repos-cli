@@ -5,7 +5,7 @@ import React from "react";
 import { useGitHubAutomatedRepos, StackIcons, StackLabels } from "github-automated-repos";
 
 
-export default function Home() {
+export default function Projects() {
 
   const { data, isLoading } = useGitHubAutomatedRepos('digoarthur', 'attached');
   if (isLoading) return <p>Loading...</p>;

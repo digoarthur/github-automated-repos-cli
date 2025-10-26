@@ -21,15 +21,15 @@ let targetDir;
 
 switch (framework) {
   case "next":
-    sourceDir = path.join(__dirname, "../examples/nextjs/page.tsx");
+    sourceDir = path.join(__dirname, "../example/Project.tsx");
     targetDir = path.join(process.cwd(), "src/app/projects/page.tsx");
     break;
   case "react":
-    sourceDir = path.join(__dirname, "../examples/react/Project.jsx");
-    targetDir = path.join(process.cwd(), "src/components/Project.jsx");
+    sourceDir = path.join(__dirname, "../example/Project.tsx");
+    targetDir = path.join(process.cwd(), "src/components/Project.tsx");
     break;
   case "vite":
-    sourceDir = path.join(__dirname, "../examples/vite/Project.tsx");
+    sourceDir = path.join(__dirname, "../example/Project.tsx");
     targetDir = path.join(process.cwd(), "src/components/Project.tsx");
     break;
 }

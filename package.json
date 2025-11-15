@@ -8,6 +8,7 @@
   },
 
   "scripts": {
+    "localTest":"npm link",
     "start": "node ./bin/index.js"
   },
 

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 
-export function ensureDependencyExists(projectRoot, packageName) {
+export default function ensureDependencyExists(projectRoot, packageName) {
   const pkgPath = path.join(projectRoot, "package.json");
   if (!fs.existsSync(pkgPath)) {
     return false;

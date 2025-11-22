@@ -1,4 +1,4 @@
-export function getInstallCommand(packageManager, packageName) {
+export default function getInstallCommand(packageManager, packageName) {
   switch (packageManager) {
     case "pnpm":
       return `pnpm add ${packageName}`;

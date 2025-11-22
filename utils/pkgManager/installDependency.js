@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import chalk from "chalk";
-export function installDependency(projectRoot, installCommand) {
+export  default function installDependency(projectRoot, installCommand) {
   try {
     console.log(chalk.gray(`Running in ${projectRoot}:`));
     console.log(chalk.yellow(`> ${installCommand}`));

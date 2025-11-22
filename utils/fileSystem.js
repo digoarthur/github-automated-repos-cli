@@ -2,13 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-/**
- * Copy files from srcDir to destDir recursively.
- * - Creates destDir if needed
- * - Does NOT overwrite existing files
- * - Returns number of files copied
- */
-export function copyFolderIfExists(srcDir, destDir) {
+export default function copyFolderIfExists(srcDir, destDir) {
   if (!fs.existsSync(srcDir)) return 0;
 
   fs.mkdirSync(destDir, { recursive: true });

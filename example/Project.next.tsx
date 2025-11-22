@@ -3,7 +3,7 @@ import { useGitHubAutomatedRepos, StackIcons, StackLabels } from "github-automat
 
 export default function Projects() {
 
-  const { data, isLoading } = useGitHubAutomatedRepos('digoarthur', 'attached');
+    const { data, isLoading } = useGitHubAutomatedRepos("__GITHUB_USERNAME__", "__KEYWORD__");
   if (isLoading) return <p>Loading...</p>;
 
   return (

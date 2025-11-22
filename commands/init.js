@@ -1,4 +1,3 @@
-// commands/init.js
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
@@ -22,57 +21,62 @@ async function run(opts = {}) {
 
   const depName = "github-automated-repos";
 
-  // check
+  // 1) Ensure dependency exists
   const hasDep = ensureDependencyExists(projectRoot, depName);
   if (!hasDep) {
     console.log(chalk.yellow(`${depName} not found.`));
+
     const pm = detectPackageManager(projectRoot);
     const installCmd = getInstallCommand(pm, depName);
 
     if (!opts.yes) {
-      process.stdout.write(chalk.yellow(`Run install command? ${installCmd} (Y/n): `));
-      const answer = fs.readFileSync(0, "utf8").trim().toLowerCase();
-      if (answer === "n" || answer === "no") throw new Error("User aborted installation.");
+      console.log(chalk.yellow(`Installing dependency: ${installCmd}`));
     }
 
     const ok = installDependency(projectRoot, installCmd);
     if (!ok) throw new Error("Failed to install dependency.");
+
     console.log(chalk.green(`${depName} installed.`));
   } else {
     console.log(chalk.green(`${depName} already installed.`));
   }
 
-  // interactive
+  // 2) Interactive questions (Inquirer)
   const answers = await askForUserAndKeyword(opts);
 
-  // detect framework and pick example
+  // 3) Detect framework
   const appDir = path.join(projectRoot, "app");
   const pagesDir = path.join(projectRoot, "pages");
-  const isVite = fs.existsSync(path.join(projectRoot, "vite.config.js")) || fs.existsSync(path.join(projectRoot, "vite.config.ts"));
+  const isVite =
+    fs.existsSync(path.join(projectRoot, "vite.config.js")) ||
+    fs.existsSync(path.join(projectRoot, "vite.config.ts"));
 
   let srcExamplePath;
   let targetPath;
+
   if (fs.existsSync(appDir)) {
     srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
     targetPath = path.join(appDir, "projects", "page.tsx");
-    console.log(chalk.gray("Detected Next.js app/"));
+    console.log(chalk.gray("Detected Next.js App Router"));
   } else if (fs.existsSync(pagesDir)) {
     srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
     targetPath = path.join(pagesDir, "projects", "index.tsx");
-    console.log(chalk.gray("Detected Next.js pages/"));
+    console.log(chalk.gray("Detected Next.js Pages Router"));
   } else if (isVite) {
     srcExamplePath = path.join(examplesRoot, "Project.vite.tsx");
     targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
-    console.log(chalk.gray("Detected Vite"));
+    console.log(chalk.gray("Detected Vite project"));
   } else {
     srcExamplePath = path.join(examplesRoot, "Project.react.tsx");
     targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
-    console.log(chalk.gray("Fallback: React"));
+    console.log(chalk.gray("Fallback React project"));
   }
 
-  if (!fs.existsSync(srcExamplePath)) throw new Error(`Example file missing: ${srcExamplePath}`);
+  if (!fs.existsSync(srcExamplePath)) {
+    throw new Error(`Example file missing: ${srcExamplePath}`);
+  }
 
-  // read, replace placeholders and write (overwrite, no .bak)
+  // 4) Write final file
   const raw = fs.readFileSync(srcExamplePath, "utf8");
   const replaced = injectPlaceholders(raw, answers);
 
@@ -83,8 +87,9 @@ async function run(opts = {}) {
   }
 
   fs.writeFileSync(targetPath, replaced, "utf8");
+
   console.log(chalk.green(`✅ Created: ${targetPath}`));
-  console.log(chalk.cyan("Run dev server and open /projects"));
+  console.log(chalk.cyan("Run your dev server and open /projects"));
 }
 
 export default { run };

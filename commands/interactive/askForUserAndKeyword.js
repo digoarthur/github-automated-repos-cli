@@ -1,29 +1,40 @@
-
-import { stdin as input, stdout as output } from "process";
-import readlinePromises from "readline/promises";
-import chalk from "chalk";
-
+import inquirer from "inquirer";
 
 export default async function askForUserAndKeyword(opts = {}) {
+  const questions = [];
 
-  if (opts.username && opts.keyword) {
-    return { username: opts.username, keyword: opts.keyword };
+  if (!opts.username) {
+    questions.push({
+      type: "input",
+      name: "username",
+      message: "GitHub username:",
+      validate: (value) =>
+        value.trim() ? true : "O username não pode estar vazio.",
+    });
   }
 
-
-  if (opts.yes) {
-    throw new Error("Non-interactive mode (--yes) requires --username and --keyword flags.");
+  if (!opts.keyword) {
+    questions.push({
+      type: "input",
+      name: "keyword",
+      message: "Keyword para filtrar (ex: attached):",
+      validate: (value) =>
+        value.trim() ? true : "A keyword não pode estar vazia.",
+    });
   }
 
-  const rl = readlinePromises.createInterface({ input, output });
+  // Se não há nada para perguntar (usuário já passou via flags)
+  if (questions.length === 0) {
+    return {
+      username: opts.username,
+      keyword: opts.keyword,
+    };
+  }
 
-  const username = (await rl.question(chalk.cyan("GitHub username (owner): "))).trim();
-  const keyword = (await rl.question(chalk.cyan("Keyword (topic) to filter (e.g. 'attached'): "))).trim();
+  const answers = await inquirer.prompt(questions);
 
-  rl.close();
-
-  if (!username) throw new Error("username is required.");
-  if (!keyword) throw new Error("keyword is required.");
-
-  return { username, keyword };
+  return {
+    username: opts.username || answers.username,
+    keyword: opts.keyword || answers.keyword,
+  };
 }

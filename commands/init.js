@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import { fileURLToPath } from "url";
-
+import detectFramework from "../utils/framework/detectFramework.js";
 import detectPackageManager from "../utils/pkgManager/detectPackageManager.js";
 import getInstallCommand from "../utils/pkgManager/getInstallCommand.js";
 import installDependency from "../utils/pkgManager/installDependency.js";
@@ -21,7 +21,7 @@ async function run(opts = {}) {
 
   const depName = "github-automated-repos";
 
-  // 1) Ensure dependency exists
+
   const hasDep = ensureDependencyExists(projectRoot, depName);
   if (!hasDep) {
     console.log(chalk.yellow(`${depName} not found.`));
@@ -41,42 +41,35 @@ async function run(opts = {}) {
     console.log(chalk.green(`${depName} already installed.`));
   }
 
-  // 2) Interactive questions (Inquirer)
+
   const answers = await askForUserAndKeyword(opts);
 
-  // 3) Detect framework
-  const appDir = path.join(projectRoot, "app");
-  const pagesDir = path.join(projectRoot, "pages");
-  const isVite =
-    fs.existsSync(path.join(projectRoot, "vite.config.js")) ||
-    fs.existsSync(path.join(projectRoot, "vite.config.ts"));
+  const framework = detectFramework(projectRoot);
 
   let srcExamplePath;
   let targetPath;
 
-  if (fs.existsSync(appDir)) {
-    srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
-    targetPath = path.join(appDir, "projects", "page.tsx");
-    console.log(chalk.gray("Detected Next.js App Router"));
-  } else if (fs.existsSync(pagesDir)) {
-    srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
-    targetPath = path.join(pagesDir, "projects", "index.tsx");
-    console.log(chalk.gray("Detected Next.js Pages Router"));
-  } else if (isVite) {
-    srcExamplePath = path.join(examplesRoot, "Project.vite.tsx");
-    targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
-    console.log(chalk.gray("Detected Vite project"));
-  } else {
-    srcExamplePath = path.join(examplesRoot, "Project.react.tsx");
-    targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
-    console.log(chalk.gray("Fallback React project"));
+  switch (framework) {
+    case "next-app":
+      srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
+      targetPath = path.join(projectRoot, "app", "projects", "page.tsx");
+      break;
+
+    case "next-pages":
+      srcExamplePath = path.join(examplesRoot, "Project.next.tsx");
+      targetPath = path.join(projectRoot, "pages", "projects", "index.tsx");
+      break;
+
+    case "vite":
+      srcExamplePath = path.join(examplesRoot, "Project.vite.tsx");
+      targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
+      break;
+
+    default:
+      srcExamplePath = path.join(examplesRoot, "Project.react.tsx");
+      targetPath = path.join(projectRoot, "src", "components", "Project.tsx");
   }
 
-  if (!fs.existsSync(srcExamplePath)) {
-    throw new Error(`Example file missing: ${srcExamplePath}`);
-  }
-
-  // 4) Write final file
   const raw = fs.readFileSync(srcExamplePath, "utf8");
   const replaced = injectPlaceholders(raw, answers);
 
@@ -88,8 +81,27 @@ async function run(opts = {}) {
 
   fs.writeFileSync(targetPath, replaced, "utf8");
 
-  console.log(chalk.green(`✅ Created: ${targetPath}`));
-  console.log(chalk.cyan("Run your dev server and open /projects"));
+console.log("\n" + chalk.green("✨ Your project page is ready!"));
+
+console.log(
+  chalk.cyan(
+    `Run your dev server and open:\n 🔗 http://localhost:3000/projects\n`
+  )
+);
+
+console.log(
+  "\n" +
+  chalk.yellow("💡 Don't forget:\n") +
+  chalk.yellow("• Access your GitHub profile → ") +
+  chalk.red( `🐙 https://github.com/${answers.username}\n`) +
+  chalk.yellow("• Open the repository you want to display\n") +
+  chalk.yellow("• Go to: ") +
+  chalk.red("Settings → Topics") +
+  chalk.yellow("\n") +
+  chalk.yellow("• Add your chosen keyword, 🔑 ") +
+  chalk.red(answers.keyword) +
+  chalk.yellow(", so the project appears on your page!\n")
+);
 }
 
 export default { run };

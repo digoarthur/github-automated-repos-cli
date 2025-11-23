@@ -8,6 +8,7 @@ import getInstallCommand from "../utils/pkgManager/getInstallCommand.js";
 import installDependency from "../utils/pkgManager/installDependency.js";
 import ensureDependencyExists from "../utils/pkgManager/ensureDependencyExists.js";
 
+import getLocalhostUrl from "../utils/getLocalhostUrl.js";
 import askForUserAndKeyword from "./interactive/askForUserAndKeyword.js";
 import injectPlaceholders from "./interactive/injectPlaceholders.js";
 
@@ -81,11 +82,14 @@ async function run(opts = {}) {
 
   fs.writeFileSync(targetPath, replaced, "utf8");
 
+
+const projectUrl = getLocalhostUrl(framework);
+
 console.log("\n" + chalk.green("✨ Your project page is ready!"));
 
 console.log(
   chalk.cyan(
-    `Run your dev server and open:\n 🔗 http://localhost:3000/projects\n`
+    `Run your dev server and open:\n 🔗 ${projectUrl}\n`
   )
 );
 

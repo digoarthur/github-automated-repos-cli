@@ -1,5 +1,9 @@
 import inquirer from "inquirer";
-
+/**
+ * @description Prompts the user for GitHub username and keyword unless they were provided via CLI flags.
+ * @param {{ username?: string, keyword?: string }} opts - Optional values passed through CLI flags.
+ * @returns {Promise<{ username: string, keyword: string }>} The resolved username and keyword.
+ */
 export default async function askForUserAndKeyword(opts = {}) {
   const questions = [];
 
@@ -9,7 +13,7 @@ export default async function askForUserAndKeyword(opts = {}) {
       name: "username",
       message: "GitHub username:",
       validate: (value) =>
-        value.trim() ? true : "O username não pode estar vazio.",
+        value.trim() ? true : "The username cannot be empty.",
     });
   }
 
@@ -17,13 +21,12 @@ export default async function askForUserAndKeyword(opts = {}) {
     questions.push({
       type: "input",
       name: "keyword",
-      message: "Keyword para filtrar (ex: attached):",
+      message: "Keyword to filter (e.g. 'attached'):",
       validate: (value) =>
-        value.trim() ? true : "A keyword não pode estar vazia.",
+        value.trim() ? true : "The keyword cannot be empty.",
     });
   }
 
-  // Se não há nada para perguntar (usuário já passou via flags)
   if (questions.length === 0) {
     return {
       username: opts.username,

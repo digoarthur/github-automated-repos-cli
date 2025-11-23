@@ -1,7 +1,12 @@
 import fs from "fs";
 import path from "path";
 
-
+/**
+ * @description Checks whether a given dependency exists inside the project's package.json.
+ * @param {string} projectRoot - Absolute path of the project root.
+ * @param {string} packageName - Name of the dependency to verify.
+ * @returns {boolean} True if the dependency is listed, otherwise false.
+ */
 export default function ensureDependencyExists(projectRoot, packageName) {
   const pkgPath = path.join(projectRoot, "package.json");
   if (!fs.existsSync(pkgPath)) {
@@ -16,7 +21,6 @@ export default function ensureDependencyExists(projectRoot, packageName) {
 
     return Boolean(present);
   } catch (err) {
-
     return false;
   }
 }

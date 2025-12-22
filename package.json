@@ -8,7 +8,9 @@
   },
   "scripts": {
     "localTest": "npm link",
-    "start": "node ./bin/index.js"
+    "start": "node ./bin/index.js",
+    "changelog": "conventional-changelog --config changelog-config.cjs -i CHANGELOG.md -s -r 0"
+
   },
   "author": "Digo Arthur",
   "license": "MIT",
@@ -23,5 +25,8 @@
     "bin",
     "example",
     "README.md"
-  ]
+  ],
+  "devDependencies": {
+    "conventional-changelog-cli": "^5.0.0"
+  }
 }

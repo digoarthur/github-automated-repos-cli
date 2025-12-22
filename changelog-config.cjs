@@ -1,22 +1,10 @@
-/**
- * --------------------------
- * CHANGELOG.md Generator (CLI)
- *---------------------------
- * Rules implemented:
- * - Includes commits of type `feat`, `fix`, `refactor`.
- * - Includes commits with known scopes.
- * - Normalizes scope names.
- * - Commits without scope go to `general`.
- * - Adds GitHub commit links with short hashes.
- * - Outputs Markdown tables.
- */
-
 module.exports = {
   preset: "angular",
   writerOpts: {
     transform: (commit) => {
       if (!commit.hash) return null;
 
+      // 🔑 Only user-relevant changes
       const allowedTypes = ["feat", "fix"];
 
       const knownScopes = [
@@ -34,20 +22,17 @@ module.exports = {
         "vite-template",
         "next-template",
         "github-actions",
-        "docs",
-        "changelog",
-        "script",
         "general",
       ];
 
-      const shouldInclude =
-        allowedTypes.includes(commit.type) ||
-        (commit.scope && knownScopes.includes(commit.scope));
-
-      if (!shouldInclude) return null;
+     
+      if (!allowedTypes.includes(commit.type)) {
+        return null;
+      }
 
       const shortHash = commit.hash.substring(0, 7);
-      const hashLink = `https://github.com/DIGOARTHUR/github-automated-repos-cli/commit/${commit.hash}`;
+      const hashLink =
+        `https://github.com/DIGOARTHUR/github-automated-repos-cli/commit/${commit.hash}`;
 
       let normalizedScope = commit.scope;
 
@@ -65,8 +50,8 @@ module.exports = {
           .replace(/cli/i, "cli")
           .replace(/page[-_]?example/i, "pageExample")
           .replace(/vite[-_]?template/i, "vite-template")
-          .replace(/docs?/i, "docs")
-          .replace(/changelog/i, "changelog");
+          .replace(/next[-_]?template/i, "next-template")
+          .replace(/github[-_]?actions?/i, "github-actions");
       }
 
       if (!normalizedScope || !knownScopes.includes(normalizedScope)) {
@@ -96,11 +81,8 @@ module.exports = {
         "pageExample",
         "page",
         "vite-template",
-        "docs",
+        "next-template",
         "general",
-        "changelog",
-        "script",
-        "bin",
       ];
       return order.indexOf(a.title) - order.indexOf(b.title);
     },

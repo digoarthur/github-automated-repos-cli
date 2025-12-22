@@ -1,0 +1,41 @@
+name: Validate version on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate version against source branch
+        run: |
+          SOURCE_BRANCH="${{ github.head_ref }}"
+          VERSION=$(node -p "require('./package.json').version")
+
+          echo "Source branch: $SOURCE_BRANCH"
+          echo "Package version: $VERSION"
+
+          if [[ "$SOURCE_BRANCH" =~ ^([0-9]+)\.([0-9]+)\.x$ ]]; then
+            EXPECTED_MAJOR_MINOR="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+            ACTUAL_MAJOR_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+
+            if [[ "$EXPECTED_MAJOR_MINOR" != "$ACTUAL_MAJOR_MINOR" ]]; then
+              echo "❌ Version mismatch!"
+              echo "Branch expects version: $EXPECTED_MAJOR_MINOR.x"
+              echo "Found version: $VERSION"
+              exit 1
+            fi
+          else
+            echo "ℹ️ Branch does not follow version pattern, skipping validation."
+          fi

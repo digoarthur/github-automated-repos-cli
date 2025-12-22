@@ -1,5 +1,8 @@
 name: Generate Changelog
 
+permissions:
+  contents: write
+
 on:
   push:
     branches-ignore:

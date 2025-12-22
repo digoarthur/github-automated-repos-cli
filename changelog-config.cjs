@@ -17,7 +17,7 @@ module.exports = {
     transform: (commit) => {
       if (!commit.hash) return null;
 
-      const allowedTypes = ["feat", "fix", "refactor"];
+      const allowedTypes = ["feat", "fix"];
 
       const knownScopes = [
         "cli",
@@ -32,6 +32,8 @@ module.exports = {
         "pageExample",
         "page",
         "vite-template",
+        "next-template",
+        "github-actions",
         "docs",
         "changelog",
         "script",

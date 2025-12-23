@@ -42,7 +42,7 @@ jobs:
             echo "Found:"
             echo "  - version: $PACKAGE_VERSION"
             echo ""
-            echo "👉 Please fix the following:"
+            echo "🛠️ Please fix the following:"
             echo "  - Update the version in package.json to match the current branch version you are working on"
             echo ""
             echo "💡 As well as the package and branch version, be sure to check the code version published in NPM to follow a correct sequence."

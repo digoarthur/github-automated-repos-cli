@@ -8,7 +8,7 @@
   },
   "scripts": {
     "localTest": "npm link",
-    "dev:setup": "git update-index --skip-worktree CHANGELOG.md || true",
+    "setup": "git update-index --skip-worktree CHANGELOG.md",
     "start": "node ./bin/index.js",
     "changelog": "conventional-changelog --config changelog-config.cjs -i CHANGELOG.md -s -r 0"
 

@@ -4,7 +4,9 @@ on:
   pull_request:
     branches:
       - main
-
+  push:
+    branches:
+      - '**.x'
 jobs:
   validate-version:
     runs-on: ubuntu-latest

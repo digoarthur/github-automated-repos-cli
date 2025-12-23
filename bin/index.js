@@ -1,41 +1,29 @@
 #!/usr/bin/env node
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { Command } from "commander";
+import chalk from "chalk";
+import initCommand from "../commands/init.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const program = new Command();
 
-const args = process.argv.slice(2);
-const framework = args[0] || "next";
+program
+  .name("github-automated-repos-cli")
+  .description("CLI oficial do github-automated-repos (only init)")
+  .version("1.0.0");
 
-if (!["next", "react", "vite"].includes(framework)) {
-  console.log("Uso: npx github-automated-repos-example [next|react|vite]");
-  process.exit(1);
-}
+program
+  .command("init")
+  .description("Initialize the project: ensure dependency, install if needed and add example page/component")
+  .option("-y, --yes", "auto-confirm prompts (non-interactive)")
+  .action((opts) => {
+    initCommand
+      .run(opts)
+      .then(() => {
+        console.log(chalk.green("Init finished successfully."));
+      })
+      .catch((err) => {
+        console.error(chalk.red("Init failed:"), err.message || err);
+        process.exit(1);
+      });
+  });
 
-console.log(`🚀 Gerando exemplo para ${framework}...`);
-
-let sourceDir;
-let targetDir;
-
-switch (framework) {
-  case "next":
-    sourceDir = path.join(__dirname, "../examples/nextjs/page.tsx");
-    targetDir = path.join(process.cwd(), "src/app/projects/page.tsx");
-    break;
-  case "react":
-    sourceDir = path.join(__dirname, "../examples/react/Project.jsx");
-    targetDir = path.join(process.cwd(), "src/components/Project.jsx");
-    break;
-  case "vite":
-    sourceDir = path.join(__dirname, "../examples/vite/Project.tsx");
-    targetDir = path.join(process.cwd(), "src/components/Project.tsx");
-    break;
-}
-
-fs.mkdirSync(path.dirname(targetDir), { recursive: true });
-
-fs.copyFileSync(sourceDir, targetDir);
-console.log(`✅ Exemplo criado em: ${targetDir}`);
-console.log("💡 Agora você pode acessar a página no seu projeto Next.js em /projects");
+program.parse(process.argv);

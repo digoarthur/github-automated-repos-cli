@@ -1,0 +1,54 @@
+name: Validate version
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - '**.x'
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate package.json version against branch
+        run: |
+          SOURCE_BRANCH="${{ github.head_ref }}"
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          echo ""
+          echo "🔍 Version validation"
+          echo "----------------------"
+          echo "Source branch: $SOURCE_BRANCH"
+          echo "package.json version: $PACKAGE_VERSION"
+          echo ""
+
+          # Extract expected major.minor from branch (e.g. 1.2.x -> 1.2)
+          EXPECTED_PREFIX=$(echo "$SOURCE_BRANCH" | sed 's/\.x//')
+
+          if [[ "$PACKAGE_VERSION" != "$EXPECTED_PREFIX"* ]]; then
+            echo "❌ Version validation failed"
+            echo ""
+            echo "Expected package.json version to start with:"
+            echo "  - $EXPECTED_PREFIX."
+            echo ""
+            echo "Found:"
+            echo "  - version: $PACKAGE_VERSION"
+            echo ""
+            echo "🛠️ Please fix the following:"
+            echo "  - Update the version in package.json to match the current branch version you are working on"
+            echo ""
+            echo "💡 As well as the package and branch version, be sure to check the code version published in NPM to follow a correct sequence."
+            exit 1
+          fi
+
+          echo "✅ Version validation passed"

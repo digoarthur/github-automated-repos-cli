@@ -1,19 +1,33 @@
 {
   "name": "github-automated-repos-cli",
   "version": "1.0.0",
-  "description": "CLI para gerar página de exemplo usando github-automated-repos em projetos Next.js, React ou Vite",
-  "bin": {
-    "github-automated-repos-example": "bin/index.js"
-  },
+  "description": "CLI para gerar página de exemplo usando github-automated-repos em projetos Next.js, React ou Vite.",
   "type": "module",
-  "scripts": {
-    "start": "node bin/index.js"
+  "bin": {
+    "github-automated-repos-cli": "./bin/index.js"
   },
-  "author": "Seu Nome",
+  "scripts": {
+    "localTest": "npm link",
+    "setup": "git update-index --skip-worktree CHANGELOG.md",
+    "start": "node ./bin/index.js",
+    "changelog": "conventional-changelog --config changelog-config.cjs -i CHANGELOG.md -s -r 0",
+    "prepublishOnly": "node ./scripts/validate-publish-branch.js"
+  },
+  "author": "Digo Arthur",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
+    "inquirer": "^13.0.1",
+    "ora": "^9.0.0",
+    "prompts": "^2.4.2"
+  },
   "files": [
     "bin",
-    "examples"
-  ]
+    "example",
+    "README.md"
+  ],
+  "devDependencies": {
+    "conventional-changelog-cli": "^5.0.0"
+  }
 }

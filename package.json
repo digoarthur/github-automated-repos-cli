@@ -1,7 +1,18 @@
 {
   "name": "github-automated-repos-cli",
   "version": "1.0.1",
-  "description": "CLI para gerar página de exemplo usando github-automated-repos em projetos Next.js, React ou Vite.",
+ "description": "CLI that automates the creation of GitHub project pages by integrating github-automated-repos Library into Next.js, React, and Vite workflows.",
+
+  "author": {
+    "name": "Diego Arthur (@digoarthur)",
+    "url": "https://www.linkedin.com/in/digoarthur/",
+    "github": "https://github.com/DIGOARTHUR"
+  },
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/digoarthur/github-automated-repos-cli"
+  },
+  "homepage": "https://github-automated-repos.vercel.app",
   "type": "module",
   "bin": {
     "github-automated-repos-cli": "./bin/index.js"
@@ -13,7 +24,6 @@
     "changelog": "conventional-changelog --config changelog-config.cjs -i CHANGELOG.md -s -r 0",
     "prepublishOnly": "node ./scripts/guard-npm-publish.js"
   },
-  "author": "Digo Arthur",
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.6.2",
@@ -22,15 +32,15 @@
     "ora": "^9.0.0",
     "prompts": "^2.4.2"
   },
- "files": [
-  "bin",
-  "commands",
-  "utils",
-  "scripts",
-  "pageExample",
-  "README.md",
-  "LICENSE"
-],
+  "files": [
+    "bin",
+    "commands",
+    "utils",
+    "scripts",
+    "pageExample",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
     "conventional-changelog-cli": "^5.0.0"
   }

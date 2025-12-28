@@ -1,26 +1,25 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 
-try {
-  const branch = execSync("git branch --show-current", {
-    stdio: ["pipe", "pipe", "ignore"],
-  })
+function getCurrentBranch() {
+  return execSync("git branch --show-current", { stdio: ["ignore", "pipe", "ignore"] })
     .toString()
     .trim();
+}
 
-  if (branch !== "main") {
-    console.error("");
-    console.error("❌ NPM PUBLISH BLOCKED");
-    console.error("--------------------------------");
-    console.error("You are not allowed to publish from this branch.");
-    console.error("");
-    console.error(`Current branch: ${branch}`);
-    console.error("Allowed branch: main");
-    console.error("");
-    process.exit(1);
-  }
+const branch = getCurrentBranch();
+const registry = process.env.npm_config_registry;
 
-  console.log("✅ Branch validation passed. Publishing from main.");
-} catch (error) {
-  console.error("❌ Failed to detect git branch.");
+// 🔓 Allow local publishes (yalc, tests, local registry)
+if (!registry || !registry.includes("registry.npmjs.org")) {
+  console.log("ℹ️ Local publish detected (yalc or non-npm registry). Skipping guard.");
+  process.exit(0);
+}
+
+// 🔒 Block real npm publish outside main
+if (branch !== "main") {
+  console.error("❌ npm publish is only allowed from the 'main' branch.");
+  console.error(`Current branch: ${branch}`);
   process.exit(1);
 }
+
+console.log("✅ npm publish allowed from main branch.");
